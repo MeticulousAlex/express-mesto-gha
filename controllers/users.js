@@ -26,7 +26,7 @@ module.exports.getUser = (req, res) => {
         return res.status(404).send({ message: err.message });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send('Введён некорректный id пользователя');
+        return res.status(400).send({ message: 'Введён некорректный id пользователя' });
       }
       return res.status(500).send({ message: 'Ошибка вывода пользователя' });
     });

@@ -26,6 +26,9 @@ module.exports.deleteCard = (req, res) => {
       if (err.message === 'Карточка не найдена') {
         return res.status(404).send({ message: err.message });
       }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
       return res.status(500).send({ message: err.message });
     });
 };
@@ -41,7 +44,7 @@ module.exports.likeCard = (req, res) => {
       if (err.message === 'Карточка не найдена') {
         return res.status(404).send({ message: 'Карточка не найдена' });
       }
-      if (err.message === 'ValidationError') {
+      if (err.message === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
       return res.status(500).send({ message: 'Лайк не был поставлен' });
@@ -55,7 +58,7 @@ module.exports.dislikeCard = (req, res) => {
       if (err.message === 'Карточка не найдена') {
         return res.status(404).send({ message: 'Карточка не найдена' });
       }
-      if (err.message === 'ValidationError') {
+      if (err.message === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
       return res.status(500).send({ message: 'Лайк не был снят' });

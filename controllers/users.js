@@ -25,6 +25,9 @@ module.exports.getUser = (req, res) => {
       if (err.message === 'Пользователь не найден') {
         return res.status(404).send({ message: err.message });
       }
+      if (err.name === 'CastError') {
+        return res.status(400).send('Введён некорректный id пользователя');
+      }
       return res.status(500).send({ message: 'Ошибка вывода пользователя' });
     });
 };
@@ -39,7 +42,7 @@ module.exports.updateProfile = (req, res) => {
       if (err.message === 'Пользователь не найден') {
         return res.status(404).send({ message: err.message });
       }
-      if (err.message === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
       return res.status(500).send({ message: 'Данные не были обновлены' });

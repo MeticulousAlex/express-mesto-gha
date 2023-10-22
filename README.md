@@ -16,4 +16,4 @@
 `npm run dev` — запускает сервер с hot-reload
 
 ## Ссылка на репозиторий ПР-13
-https://github.com/Sas-not-g/mesto-backend
+https://github.com/Sas-not-g/express-mesto-gha

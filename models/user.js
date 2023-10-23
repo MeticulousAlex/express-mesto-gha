@@ -35,6 +35,6 @@ const userSchema = new mongoose.Schema({
       message: 'wrongUrl',
     },
   },
-});
+}, { versionKey: false });
 
 module.exports = new mongoose.model('user', userSchema);

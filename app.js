@@ -20,6 +20,8 @@ app.use(cookieParser());
 app.post('/signin', login);
 app.post('/signup', createUser);
 
+app.use(errors());
+
 app.use('/users', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),

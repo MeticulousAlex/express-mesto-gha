@@ -9,7 +9,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const DuplicateError = require('../errors/DuplicateError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
-const { JWT_SECRET } = process.env;
+const JWT_SECRET = '8146dee8b1ee7e625099e7294b764571140877a0048d0885cf631910693f7921';
 
 module.exports.createUser = (req, res, next) => {
   const {

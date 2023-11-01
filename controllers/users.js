@@ -105,8 +105,8 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
       }).status(200).send({ user: userData._doc });
     })
-    .catch((err) => {
-      throw new UnauthorizedError(err.message);
+    .catch(() => {
+      throw new UnauthorizedError('Ошибка авторизации');
     })
     .catch(next);
 };

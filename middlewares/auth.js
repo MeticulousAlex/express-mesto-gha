@@ -6,15 +6,18 @@ const { JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
   const jwtToken = req.cookies.jwt;
-  const token = jwtToken.replace('jwt=', '');
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(jwtToken, JWT_SECRET);
+    console.log(jwtToken);
     if (!payload) {
       throw new UnauthorizedError('Необходима авторизация');
     }
   } catch (err) {
+    if (err.name === 'JsonWebTokenError') {
+      throw new UnauthorizedError('Необходима авторизация');
+    }
     next(err);
   }
   req.user = payload;

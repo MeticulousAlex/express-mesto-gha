@@ -1,12 +1,42 @@
 const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 const {
   getAllUsers, getUser, updateProfile, updateAvatar, getMyInfo,
 } = require('../controllers/users');
 
-router.get('/', getAllUsers);
-router.get('/me', getMyInfo);
-router.get('/:_id', getUser);
-router.patch('/me', updateProfile);
-router.patch('/me/avatar', updateAvatar);
+router.get('/', celebrate({
+  cookies: Joi.object().keys({
+    jwt: Joi.string(),
+  }),
+}), getAllUsers);
+router.get('/me', celebrate({
+  cookies: Joi.object().keys({
+    jwt: Joi.string(),
+  }),
+}), getMyInfo);
+router.get('/:_id', celebrate({
+  cookies: Joi.object().keys({
+    jwt: Joi.string(),
+  }),
+}), getUser);
+router.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+  }),
+  cookies: Joi.object().keys({
+    jwt: Joi.string(),
+  }),
+}), updateProfile);
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required(),
+  }),
+  cookies: Joi.object().keys({
+    jwt: Joi.string(),
+  }),
+}), updateAvatar);
 
 module.exports = router;
+
+// передать каждому роуту celebrate (кроме app), дать celebrate самостоятельно ставить ошибки

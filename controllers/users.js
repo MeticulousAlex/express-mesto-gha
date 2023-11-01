@@ -1,3 +1,6 @@
+/* eslint-disable dot-notation */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -15,9 +18,9 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password,
     }))
     .then((user) => {
-      const userData = user;
-      delete userData.password;
-      res.status(201).send({ userData });
+      const userData = { ...user };
+      delete userData._doc.password;
+      res.status(201).send({ user: userData['_doc'] });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

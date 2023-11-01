@@ -7,7 +7,7 @@ const {
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().uri({
+    link: Joi.string().required().uri({
       scheme: [
         'http',
         'https',
@@ -36,7 +36,7 @@ router.put('/:_id/likes', celebrate({
     jwt: Joi.string(),
   }),
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    _id: Joi.string().alphanum().length(24),
   }),
 }), likeCard);
 router.delete('/:_id/likes', celebrate({
@@ -44,7 +44,7 @@ router.delete('/:_id/likes', celebrate({
     jwt: Joi.string(),
   }),
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    _id: Joi.string().alphanum().length(24),
   }),
 }), dislikeCard);
 

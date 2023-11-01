@@ -42,5 +42,3 @@ router.patch('/me/avatar', celebrate({
 }), updateAvatar);
 
 module.exports = router;
-
-// передать каждому роуту celebrate (кроме app), дать celebrate самостоятельно ставить ошибки

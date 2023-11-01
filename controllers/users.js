@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-// eslint-disable-next-line import/no-unresolved
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -17,7 +15,9 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password,
     }))
     .then((user) => {
-      res.status(201).send({ user });
+      const userData = user;
+      delete userData.password;
+      res.status(201).send({ userData });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

@@ -1,6 +1,4 @@
-/* eslint-disable import/no-unresolved */
 /* eslint-disable new-cap */
-/* eslint-disable import/no-extraneous-dependencies */
 const mongoose = require('mongoose');
 const emailValidator = require('validator').isEmail;
 const bcrypt = require('bcryptjs');

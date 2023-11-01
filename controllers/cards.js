@@ -10,8 +10,10 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.status(201).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.message === 'wrongUrl') {
-        throw new BadRequestError('Введены некорректные данные');
+        return next(new BadRequestError('Введены некорректные данные'));
       }
+
+      return next(err);
     })
     .catch(next);
 };
@@ -28,21 +30,18 @@ module.exports.deleteCard = (req, res, next) => {
       if (foundCard.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Удалять чужие карточки запрещено');
       }
-      Card.findByIdAndRemove(req.params._id)
+      Card.deleteOne(foundCard)
         .then((card) => res.status(200).send({ deletedCard: card }))
         .catch(next);
     })
     .catch((err) => {
       if (err.message === 'Карточка не найдена') {
-        throw new NotFoundError(err.message);
+        return next(new NotFoundError(err.message));
       }
       if (err.name === 'CastError') {
-        throw new BadRequestError('Введены некорректные данные');
+        return next(new BadRequestError('Введены некорректные данные'));
       }
-      throw err;
-    })
-    .catch((err) => {
-      next(err);
+      return next(err);
     });
 };
 
@@ -55,13 +54,14 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => res.status(200).send({ updatedCard: card }))
     .catch((err) => {
       if (err.message === 'Карточка не найдена') {
-        throw new NotFoundError(err.message);
+        return next(new NotFoundError(err.message));
       }
       if (err.message === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Введены некорректные данные');
+        return next(new BadRequestError('Введены некорректные данные'));
       }
-    })
-    .catch(next);
+
+      return next(err);
+    });
 };
 
 module.exports.dislikeCard = (req, res, next) => {
@@ -69,11 +69,12 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => res.status(200).send({ updatedCard: card }))
     .catch((err) => {
       if (err.message === 'Карточка не найдена') {
-        throw new NotFoundError(err.message);
+        return next(new NotFoundError(err.message));
       }
       if (err.message === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Введены некорректные данные');
+        return next(new BadRequestError('Введены некорректные данные'));
       }
-    })
-    .catch(next);
+
+      return next(err);
+    });
 };

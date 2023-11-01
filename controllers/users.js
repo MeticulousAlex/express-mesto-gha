@@ -1,6 +1,5 @@
 /* eslint-disable dot-notation */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-param-reassign */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -26,14 +25,13 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Введены некорректные данные');
+        return next(new BadRequestError('Введены некорректные данные'));
       }
       if (err.name === 'MongoServerError') {
-        throw new DuplicateError('Пользователь с таким email уже существует');
+        return next(new DuplicateError('Пользователь с таким email уже существует'));
       }
-    })
-    .catch((err) => {
-      next(err);
+
+      return next(err);
     });
 };
 
@@ -48,13 +46,14 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => res.status(200).send({ userData: user }))
     .catch((err) => {
       if (err.message === 'Пользователь с таким id не найден') {
-        throw new NotFoundError(err.message);
+        return next(new NotFoundError(err.message));
       }
       if (err.name === 'CastError') {
-        throw new BadRequestError('Введён некорректный id пользователя');
+        return next(new BadRequestError('Введён некорректный id пользователя'));
       }
-    })
-    .catch(next);
+
+      return next(err);
+    });
 };
 
 module.exports.updateProfile = (req, res, next) => {
@@ -65,13 +64,14 @@ module.exports.updateProfile = (req, res, next) => {
     .then((user) => res.status(200).send({ updatedProfile: user }))
     .catch((err) => {
       if (err.message === 'Пользователь не найден') {
-        throw new NotFoundError('Пользователь с таким id не найден');
+        return next(new NotFoundError('Пользователь с таким id не найден'));
       }
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Введены некорректные данные');
+        return next(new BadRequestError('Введены некорректные данные'));
       }
-    })
-    .catch(next);
+
+      return next(err);
+    });
 };
 
 module.exports.updateAvatar = (req, res, next) => {
@@ -84,13 +84,14 @@ module.exports.updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'Пользователь с таким id не найден') {
-        throw new NotFoundError(err.message);
+        return next(new NotFoundError(err.message));
       }
       if (err.name === 'ValidationError' || err.message === 'wrongUrl') {
-        throw new BadRequestError('Введены некорректные данные');
+        return next(new BadRequestError('Введены некорректные данные'));
       }
-    })
-    .catch(next);
+
+      return next(err);
+    });
 };
 
 module.exports.login = (req, res, next) => {
@@ -105,10 +106,13 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
       }).status(200).send({ user: userData._doc });
     })
-    .catch(() => {
-      throw new UnauthorizedError('Ошибка авторизации');
-    })
-    .catch(next);
+    .catch((err) => {
+      if (err.message === 'Неправильные почта или пароль') {
+        return next(new UnauthorizedError('Ошибка авторизации'));
+      }
+
+      return next(err);
+    });
 };
 
 module.exports.getMyInfo = (req, res, next) => {
@@ -118,8 +122,9 @@ module.exports.getMyInfo = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'Not found') {
-        throw new NotFoundError('Пользователь не найден');
+        return next(new NotFoundError('Пользователь не найден'));
       }
-    })
-    .catch(next);
+
+      return next(err);
+    });
 };

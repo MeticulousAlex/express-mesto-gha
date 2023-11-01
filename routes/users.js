@@ -9,16 +9,19 @@ router.get('/', celebrate({
     jwt: Joi.string(),
   }),
 }), getAllUsers);
+
 router.get('/me', celebrate({
   cookies: Joi.object().keys({
     jwt: Joi.string(),
   }),
 }), getMyInfo);
+
 router.get('/:_id', celebrate({
   cookies: Joi.object().keys({
     jwt: Joi.string(),
   }),
 }), getUser);
+
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
@@ -28,6 +31,7 @@ router.patch('/me', celebrate({
     jwt: Joi.string(),
   }),
 }), updateProfile);
+
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required(),

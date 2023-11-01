@@ -23,12 +23,12 @@ module.exports.getAllCards = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findOne({ _id: req.params.cardId }).orFail(new Error('Карточка не найдена'))
+  Card.findOne({ _id: req.params._id }).orFail(new Error('Карточка не найдена'))
     .then((foundCard) => {
       if (foundCard.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Удалять чужие карточки запрещено');
       }
-      return Card.findByIdAndRemove(req.params.cardId)
+      Card.findByIdAndRemove(req.params._id)
         .then((card) => res.status(200).send({ deletedCard: card }))
         .catch(next);
     })
@@ -39,8 +39,11 @@ module.exports.deleteCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Введены некорректные данные');
       }
+      throw err;
     })
-    .catch(next);
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {

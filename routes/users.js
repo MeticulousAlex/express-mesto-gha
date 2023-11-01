@@ -17,6 +17,9 @@ router.get('/me', celebrate({
 }), getMyInfo);
 
 router.get('/:_id', celebrate({
+  params: Joi.object().keys({
+    _id: Joi.string().alphanum().length(24),
+  }),
   cookies: Joi.object().keys({
     jwt: Joi.string(),
   }),
@@ -34,7 +37,12 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required(),
+    avatar: Joi.string().uri({
+      scheme: [
+        'http',
+        'https',
+      ],
+    }),
   }),
   cookies: Joi.object().keys({
     jwt: Joi.string(),

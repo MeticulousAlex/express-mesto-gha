@@ -7,7 +7,12 @@ const {
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: Joi.string().uri({
+      scheme: [
+        'http',
+        'https',
+      ],
+    }),
   }),
   cookies: Joi.object().keys({
     jwt: Joi.string(),
@@ -18,15 +23,15 @@ router.get('/', celebrate({
     jwt: Joi.string(),
   }),
 }), getAllCards);
-router.delete('/:cardId', celebrate({
+router.delete('/:_id', celebrate({
   cookies: Joi.object().keys({
     jwt: Joi.string(),
   }),
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    _id: Joi.string().alphanum().length(24),
   }),
 }), deleteCard);
-router.put('/:cardId/likes', celebrate({
+router.put('/:_id/likes', celebrate({
   cookies: Joi.object().keys({
     jwt: Joi.string(),
   }),
@@ -34,7 +39,7 @@ router.put('/:cardId/likes', celebrate({
     cardId: Joi.string().alphanum().length(24),
   }),
 }), likeCard);
-router.delete('/:cardId/likes', celebrate({
+router.delete('/:_id/likes', celebrate({
   cookies: Joi.object().keys({
     jwt: Joi.string(),
   }),

@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable new-cap */
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -47,7 +48,6 @@ const userSchema = new mongoose.Schema({
   },
 }, { versionKey: false });
 
-// eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {

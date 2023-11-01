@@ -1,6 +1,5 @@
 /* eslint-disable new-cap */
 const mongoose = require('mongoose');
-const emailValidator = require('validator').isEmail;
 const bcrypt = require('bcryptjs');
 
 const isValidUrl = (urlString) => {
@@ -39,13 +38,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    index: true,
     unique: true,
-    validate: {
-      validator(v) {
-        return emailValidator(v);
-      },
-    },
   },
   password: {
     type: String,

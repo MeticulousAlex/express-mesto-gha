@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
+const DuplicateError = require('../errors/DuplicateError');
 
 const { JWT_SECRET } = process.env;
 
@@ -26,8 +27,13 @@ module.exports.createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Введены некорректные данные');
       }
+      if (err.name === 'MongoServerError') {
+        throw new DuplicateError('Пользователь с таким email уже существует');
+      }
     })
-    .catch(next);
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports.getAllUsers = (req, res, next) => {

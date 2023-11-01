@@ -97,14 +97,16 @@ module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
+      const userData = { ...user };
+      delete userData._doc.password;
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-      }).end();
+      }).status(200).send({ user: userData._doc });
     })
-    .catch(() => {
-      throw new UnauthorizedError('Пользователь не найден');
+    .catch((err) => {
+      throw new UnauthorizedError(err.message);
     })
     .catch(next);
 };

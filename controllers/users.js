@@ -7,6 +7,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const DuplicateError = require('../errors/DuplicateError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const { JWT_SECRET } = process.env;
 
@@ -94,7 +95,7 @@ module.exports.updateAvatar = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('jwt', token, {
@@ -103,7 +104,7 @@ module.exports.login = (req, res, next) => {
       }).end();
     })
     .catch(() => {
-      throw new NotFoundError('Пользователь не найден');
+      throw new UnauthorizedError('Пользователь не найден');
     })
     .catch(next);
 };

@@ -104,7 +104,7 @@ module.exports.login = (req, res, next) => {
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-      }).status(200).send({ user: userData._doc });
+      }).status(200).send({ user: userData._doc, orig: req.headers.origin });
     })
     .catch((err) => {
       if (err.message === 'Неправильные почта или пароль') {

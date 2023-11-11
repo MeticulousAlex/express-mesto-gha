@@ -8,7 +8,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const DuplicateError = require('../errors/DuplicateError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
-const JWT_SECRET = '8146dee8b1ee7e625099e7294b764571140877a0048d0885cf631910693f7921';
+const { JWT_SECRET } = process.env;
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -97,14 +97,16 @@ module.exports.updateAvatar = (req, res, next) => {
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
-    .then((user) => {
+    .then((user) => { // залогинился
       const userData = { ...user };
       delete userData._doc.password;
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      res.cookie('jwt', token, {
+      const token = jwt.sign({ _id: user._id }, process.env.NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      res.cookie('jwt', token, { // присвоил токен куки
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-      }).status(200).send({ user: userData._doc, orig: req.headers.origin });
+        secure: true,
+        sameSite: 'None',
+      }).status(200).send({ user: userData._doc, orig: req.headers.origin }); // вернул юзера
     })
     .catch((err) => {
       if (err.message === 'Неправильные почта или пароль') {

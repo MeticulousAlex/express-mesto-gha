@@ -38,7 +38,7 @@ module.exports.createUser = (req, res, next) => {
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(next);
+    .catch((err) => next(new NotFoundError(err.message)));
 };
 
 module.exports.getUser = (req, res, next) => {
@@ -97,20 +97,20 @@ module.exports.updateAvatar = (req, res, next) => {
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
-    .then((user) => { // залогинился
+    .then((user) => {
       const userData = { ...user };
       delete userData._doc.password;
       const token = jwt.sign({ _id: user._id }, process.env.NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-      res.cookie('jwt', token, { // присвоил токен куки
+      res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: 'None',
-      }).status(200).send({ user: userData._doc, orig: req.headers.origin }); // вернул юзера
+      }).status(200).send({ user: userData._doc });
     })
     .catch((err) => {
       if (err.message === 'Неправильные почта или пароль') {
-        return next(new UnauthorizedError('Ошибка авторизации'));
+        return next(new UnauthorizedError(err.message));
       }
 
       return next(err);
@@ -118,7 +118,7 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getMyInfo = (req, res, next) => {
-  User.findOne({ _id: req.user._id }).orFail(new Error('Not found'))
+  User.findOne({ _id: req.user._id }).orFail(new NotFoundError('Not found'))
     .then((user) => {
       res.status(200).send({ userData: user });
     })

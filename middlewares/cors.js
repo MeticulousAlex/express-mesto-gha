@@ -1,25 +1,26 @@
 // const allowedCors = [
-//   'http://http://alexsng.mesto.nomoredomainsmonster.ru/',
-//   'https://http://alexsng.mesto.nomoredomainsmonster.ru/',
-//   'http://localhost:3001',
+//   'http://alexsng.mesto.nomoredomainsmonster.ru',
+//   'https://alexsng.mesto.nomoredomainsmonster.ru',
+
 // ];
 
-// module.exports = (req, res, next) => {
-//   const { origin } = req.headers;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//     res.header('Access-Control-Allow-Credentials', true);
-//   }
+// const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
-//   const { method } = req;
-//   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-//   const requestHeaders = req.headers['access-control-request-headers'];
+// module.exports = { allowedCors, DEFAULT_ALLOWED_METHODS };
+// // module.exports = (req, res, next) => {
+// //   const { origin } = req.headers;
+// //   console.log(origin);
+// //   if (allowedCors.includes(origin)) {
+// //     res.header('Access-Control-Allow-Origin', origin);
+// //     const { method } = req;
+// //     const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+// //     const requestHeaders = req.headers['access-control-request-headers'];
 
-//   if (method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     res.header('Access-Control-Expose-Headers', '*');
-//     return res.end();
-//   }
-//   return next();
-// };
+// //     if (method === 'OPTIONS') {
+// //       res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+// //       res.header('Access-Control-Allow-Headers', requestHeaders);
+// //       return res.end();
+// //     }
+// //   }
+// //   return next();
+// // };

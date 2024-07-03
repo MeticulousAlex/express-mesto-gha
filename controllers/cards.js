@@ -6,7 +6,10 @@ const ForbiddenError = require('../errors/ForbiddenError');
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
-  Card.create({ name, link, owner })
+  const likes = [];
+  Card.create({
+    name, link, owner, likes,
+  })
     .then((card) => res.status(201).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.message === 'wrongUrl') {
